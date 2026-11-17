@@ -1,0 +1,41 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test Windows
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
+        pandas-version: ["<3", ">=3"]
+        exclude:
+          # pandas<3 does not support Python 3.15
+          - python-version: "3.15"
+            pandas-version: "<3"
+
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v5
+
+    - name: Setup uv ${{ matrix.python-version }}
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: false
+        cache-dependency-glob: "pyproject.toml"
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies (pandas${{ matrix.pandas-version }})
+      run: |
+        make devenv
+        uv pip install "pandas${{ matrix.pandas-version }}"
+
+    - name: Test
+      run: make test
