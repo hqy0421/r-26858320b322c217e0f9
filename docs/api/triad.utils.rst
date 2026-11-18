@@ -2,6 +2,14 @@ triad.utils
 ============
 
 
+triad.utils.arrow\_dataset
+---------------------------
+
+.. automodule:: triad.utils.arrow_dataset
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 triad.utils.assertion
 ---------------------
 
